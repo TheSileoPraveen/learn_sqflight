@@ -37,18 +37,31 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: const Color(0xffF5F7FB),
       appBar: AppBar(
-        backgroundColor: Colors.white,
+        backgroundColor: Color(0xff155DFC),
         elevation: 5,
-        title: Text("Notes"),
+        title: Text("Notes", style: TextStyle(color: Colors.white)),
         centerTitle: true,
       ),
-      body: listCard(),
-      floatingActionButton: FloatingActionButton(
-        backgroundColor: Colors.white,
-        elevation: 10,
-        child: Icon(Icons.add),
+      body: AnimatedSlide(
+        offset: const Offset(0, 0),
+        duration: const Duration(milliseconds: 300),
+        curve: Curves.easeOut,
+        child: AnimatedOpacity(
+          opacity: 1,
+          duration: const Duration(milliseconds: 300),
+          child: listCard(),
+        ),
+      ),
+      floatingActionButton: FloatingActionButton.extended(
+        backgroundColor: const Color(0xff155DFC),
+        elevation: 6,
+        icon: const Icon(Icons.add, color: Colors.white),
+        label: const Text(
+          "New Note",
+          style: TextStyle(fontWeight: FontWeight.w600, color: Colors.white),
+        ),
         onPressed: () {
           showNoteBottomSheet(context);
         },
@@ -64,15 +77,19 @@ class _HomeScreenState extends State<HomeScreen> {
               children: [
                 Icon(
                   Icons.note_alt_outlined,
-                  size: 80,
-                  color: Colors.grey.shade400,
+                  size: 90,
+                  color: Colors.grey.shade300,
                 ),
-                const SizedBox(height: 12),
-                const Text(
+                const SizedBox(height: 16),
+                Text(
                   "No Notes Yet",
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
+                  style: TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.w700,
+                    color: Colors.grey.shade800,
+                  ),
                 ),
-                const SizedBox(height: 6),
+                const SizedBox(height: 8),
                 RichText(
                   textAlign: TextAlign.center,
                   text: TextSpan(
@@ -80,7 +97,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     children: const [
                       TextSpan(text: "Tap "),
                       TextSpan(
-                        text: " + ",
+                        text: "+",
                         style: TextStyle(
                           fontWeight: FontWeight.bold,
                           fontSize: 16,
@@ -99,6 +116,7 @@ class _HomeScreenState extends State<HomeScreen> {
               final note = noteList[index];
 
               return InkWell(
+                borderRadius: BorderRadius.circular(16),
                 onTap: () {
                   Navigator.push(
                     context,
@@ -112,156 +130,186 @@ class _HomeScreenState extends State<HomeScreen> {
                 },
                 child: Container(
                   margin: EdgeInsets.only(
-                    left: 24,
-                    right: 24,
+                    left: 20,
+                    right: 20,
                     top: index == 0 ? 20 : 0,
-                    bottom: 20,
+                    bottom: 16,
                   ),
-                  padding: const EdgeInsets.all(18),
                   decoration: BoxDecoration(
                     color: Colors.white,
-                    borderRadius: BorderRadius.circular(14),
+                    borderRadius: BorderRadius.circular(16),
                     boxShadow: [
                       BoxShadow(
-                        color: Colors.black.withOpacity(0.08),
-                        blurRadius: 15,
-                        offset: const Offset(0, 5),
+                        color: Colors.black.withOpacity(0.05),
+                        blurRadius: 20,
+                        offset: const Offset(0, 8),
                       ),
                     ],
                   ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+                  child: Row(
                     children: [
-                      Text(
-                        note[LocalDb.titleColumn],
-                        maxLines: 1,
-                        style: const TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.w600,
+                      Container(
+                        width: 5,
+                        height: 150,
+                        decoration: const BoxDecoration(
+                          color: Color(0xff155DFC),
+                          borderRadius: BorderRadius.only(
+                            topLeft: Radius.circular(16),
+                            bottomLeft: Radius.circular(16),
+                          ),
                         ),
                       ),
-
-                      const SizedBox(height: 8),
-
-                      Text(
-                        note[LocalDb.descColumn],
-                        maxLines: 2,
-                        style: TextStyle(
-                          fontSize: 14,
-                          color: Colors.grey.shade700,
-                        ),
-                      ),
-
-                      const SizedBox(height: 16),
-
-                      Row(
-                        children: [
-                          const Icon(
-                            Icons.access_time,
-                            size: 16,
-                            color: Colors.grey,
-                          ),
-                          const SizedBox(width: 6),
-                          Text(
-                            formatDate(note[LocalDb.createdByColumn]),
-                            style: TextStyle(
-                              fontSize: 12,
-                              color: Colors.grey.shade600,
-                            ),
-                          ),
-                        ],
-                      ),
-
-                      const SizedBox(height: 14),
-
-                      Divider(color: Colors.grey.shade200),
-
-                      const SizedBox(height: 6),
-
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: [
-                          InkWell(
-                            onTap: () {
-                              isUpdate = true;
-                              showNoteBottomSheet(
-                                context,
-                                note[LocalDb.idColumn],
+                      Expanded(
+                        child: Padding(
+                          padding: const EdgeInsets.all(18),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
                                 note[LocalDb.titleColumn],
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                                style: const TextStyle(
+                                  fontSize: 19,
+                                  fontWeight: FontWeight.w700,
+                                  letterSpacing: 0.3,
+                                ),
+                              ),
+                              const SizedBox(height: 8),
+                              Text(
                                 note[LocalDb.descColumn],
-                              );
-                              setState(() {});
-                            },
-                            borderRadius: BorderRadius.circular(8),
-                            child: Container(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 12,
-                                vertical: 6,
+                                maxLines: 2,
+                                overflow: TextOverflow.ellipsis,
+                                style: TextStyle(
+                                  fontSize: 15,
+                                  height: 1.4,
+                                  color: Colors.grey.shade700,
+                                ),
                               ),
-                              child: Row(
-                                children: const [
-                                  Icon(
-                                    Icons.edit,
-                                    size: 18,
-                                    color: Colors.blue,
+                              const SizedBox(height: 16),
+                              Row(
+                                children: [
+                                  const Icon(
+                                    Icons.access_time,
+                                    size: 16,
+                                    color: Colors.grey,
                                   ),
-                                  SizedBox(width: 4),
+                                  const SizedBox(width: 6),
                                   Text(
-                                    "Update",
+                                    formatDate(note[LocalDb.createdByColumn]),
                                     style: TextStyle(
-                                      color: Colors.blue,
-                                      fontWeight: FontWeight.w500,
+                                      fontSize: 12,
+                                      color: Colors.grey.shade600,
                                     ),
                                   ),
                                 ],
                               ),
-                            ),
-                          ),
-
-                          const SizedBox(width: 12),
-
-                          InkWell(
-                            onTap: () {
-                              localDb!
-                                  .deleteNote(id: note[LocalDb.idColumn])
-                                  .then((value) {
-                                    if (value > 0) {
-                                      getAllNote();
-                                      IconSnackBar.show(
+                              Container(
+                                margin: const EdgeInsets.symmetric(
+                                  vertical: 14,
+                                ),
+                                height: 1,
+                                color: Colors.grey.shade100,
+                              ),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.end,
+                                children: [
+                                  InkWell(
+                                    borderRadius: BorderRadius.circular(8),
+                                    onTap: () {
+                                      isUpdate = true;
+                                      showNoteBottomSheet(
                                         context,
-                                        snackBarType: SnackBarType.success,
-                                        label: 'Note delet successfully',
-                                        behavior: SnackBarBehavior.floating,
+                                        note[LocalDb.idColumn],
+                                        note[LocalDb.titleColumn],
+                                        note[LocalDb.descColumn],
                                       );
-                                    }
-                                  });
-                            },
-                            borderRadius: BorderRadius.circular(8),
-                            child: Container(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 12,
-                                vertical: 6,
-                              ),
-                              child: Row(
-                                children: const [
-                                  Icon(
-                                    Icons.delete,
-                                    size: 18,
-                                    color: Colors.red,
+                                      setState(() {});
+                                    },
+                                    child: Container(
+                                      padding: const EdgeInsets.symmetric(
+                                        horizontal: 12,
+                                        vertical: 6,
+                                      ),
+                                      decoration: BoxDecoration(
+                                        color: Colors.blue.withOpacity(0.08),
+                                        borderRadius: BorderRadius.circular(8),
+                                      ),
+                                      child: Row(
+                                        children: const [
+                                          Icon(
+                                            Icons.edit,
+                                            size: 18,
+                                            color: Colors.blue,
+                                          ),
+                                          SizedBox(width: 4),
+                                          Text(
+                                            "Update",
+                                            style: TextStyle(
+                                              color: Colors.blue,
+                                              fontWeight: FontWeight.w600,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
                                   ),
-                                  SizedBox(width: 4),
-                                  Text(
-                                    "Delete",
-                                    style: TextStyle(
-                                      color: Colors.red,
-                                      fontWeight: FontWeight.w500,
+                                  const SizedBox(width: 10),
+                                  InkWell(
+                                    borderRadius: BorderRadius.circular(8),
+                                    onTap: () {
+                                      localDb!
+                                          .deleteNote(
+                                            id: note[LocalDb.idColumn],
+                                          )
+                                          .then((value) {
+                                            if (value > 0) {
+                                              getAllNote();
+                                              IconSnackBar.show(
+                                                context,
+                                                snackBarType:
+                                                    SnackBarType.success,
+                                                label:
+                                                    'Note deleted successfully',
+                                                behavior:
+                                                    SnackBarBehavior.floating,
+                                              );
+                                            }
+                                          });
+                                    },
+                                    child: Container(
+                                      padding: const EdgeInsets.symmetric(
+                                        horizontal: 12,
+                                        vertical: 6,
+                                      ),
+                                      decoration: BoxDecoration(
+                                        color: Colors.red.withOpacity(0.08),
+                                        borderRadius: BorderRadius.circular(8),
+                                      ),
+                                      child: Row(
+                                        children: const [
+                                          Icon(
+                                            Icons.delete,
+                                            size: 18,
+                                            color: Colors.red,
+                                          ),
+                                          SizedBox(width: 4),
+                                          Text(
+                                            "Delete",
+                                            style: TextStyle(
+                                              color: Colors.red,
+                                              fontWeight: FontWeight.w600,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
                                     ),
                                   ),
                                 ],
                               ),
-                            ),
+                            ],
                           ),
-                        ],
+                        ),
                       ),
                     ],
                   ),
@@ -404,12 +452,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                   }
                                 },
                                 style: ElevatedButton.styleFrom(
-                                  backgroundColor: const Color.fromARGB(
-                                    255,
-                                    11,
-                                    118,
-                                    14,
-                                  ),
+                                  backgroundColor: Color(0xff155DFC),
                                 ),
                                 child: const Text(
                                   "Update",
@@ -424,12 +467,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             child: Expanded(
                               child: ElevatedButton(
                                 style: ElevatedButton.styleFrom(
-                                  backgroundColor: const Color.fromARGB(
-                                    255,
-                                    11,
-                                    118,
-                                    14,
-                                  ),
+                                  backgroundColor: Color(0xff155DFC),
                                 ),
                                 onPressed: () {
                                   if (titleController.text.trim().isEmpty ||

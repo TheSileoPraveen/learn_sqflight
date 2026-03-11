@@ -14,9 +14,13 @@ class NoteDetailScreen extends StatelessWidget {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        backgroundColor: Colors.white,
+        backgroundColor: Color(0xff155DFC),
+        leading: InkWell(
+          onTap: () => Navigator.pop(context),
+          child: Icon(Icons.arrow_back, color: Colors.white),
+        ),
         elevation: 5,
-        title: Text(title),
+        title: Text(title, style: TextStyle(color: Colors.white)),
         centerTitle: true,
       ),
       body: Padding(
